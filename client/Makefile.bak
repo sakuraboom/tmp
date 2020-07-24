@@ -1,0 +1,18 @@
+# *****************************************************
+#     > Do Androids Dream of Electric Sheep? 
+#     > File Name   :  Makefile
+#     > Author      :  spike
+#     > Email       :  Gehirn@yeah.net
+#     > Create time :  CST 13:43:18 2020/07/23 四
+#     > Comment     :
+# *****************************************************
+
+
+make : 
+	gcc client.c ../common/common.c ../common/game_ui.c -I ../common/ -o client -lncursesw -lpthread
+
+open :
+	vim ./client.c
+
+run :
+	./client
