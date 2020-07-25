@@ -1,4 +1,4 @@
-#include "head.h"
+#include "../common/head.h"
 int server_port = 0;
 char server_ip[20] = {0};
 int team = -1;
@@ -79,11 +79,6 @@ int main(int argc, char **argv) {
     server.sin_addr.s_addr = inet_addr(server_ip);
 
     socklen_t len = sizeof(server);
-
-    bzero(&court, sizeof(court));
-    bzero(&ball, sizeof(ball));
-    bzero(&ball_status, sizeof(ball_status));
-
     
     //init_ui();
     //show_info();
@@ -121,20 +116,19 @@ int main(int argc, char **argv) {
     /*}}}*/
     
     initfootball();
-    pthread_create (&recv_t, NULL, client_recv, NULL);
-    signal (SIGALRM, send_ctl);
     
+    pthread_create (&recv_t, NULL, client_recv, NULL);
+    
+    signal (SIGALRM, send_ctl);
     struct itimerval itimer;
     itimer.it_interval.tv_sec = 0;
     itimer.it_interval.tv_usec = 100000;
     itimer.it_value.tv_sec = 0;
     itimer.it_value.tv_sec = 100000;
-
     setitimer (ITIMER_REAL, &itimer, NULL);
 
     while (1) {
         int c = getchar ();
-        struct FootBallMsg msg;
         switch (c) {
             case 'a' :
                 ctl_msg.ctl.dirx -= 1;
@@ -154,30 +148,36 @@ int main(int argc, char **argv) {
             case ' ' :
                 show_strength ();
                 break;
-            case 'k' :
-                show_data_stream ('k');
-                bzero (&msg, sizeof (msg));
-                msg.type = FT_CTL;
-                msg.ctl.action = ACTION_KICK;
-                msg.ctl.strength = 1;
-                send (sockfd, (void *)&msg, sizeof (msg), 0);
-                break;
+            case 'k' : {
+                            show_data_stream ('k');
+                            struct FootBallMsg msg;
+                            bzero (&msg, sizeof (msg));
+                            msg.type = FT_CTL;
+                            msg.ctl.action = ACTION_KICK;
+                            msg.ctl.strength = 1;
+                            send (sockfd, (void *)&msg, sizeof (msg), 0);
+                            break;
+                       }
 
-            case 'j' :
-                show_data_stream ('s');
-                bzero (&msg, sizeof (msg));
-                msg.type = FT_CTL;
-                msg.ctl.action = ACTION_STOP;
-                send (sockfd, (void *)&msg, sizeof (msg), 0);
-                break;
+            case 'j' : {
+                            show_data_stream ('s');
+                            struct FootBallMsg msg;
+                            bzero (&msg, sizeof (msg));
+                            msg.type = FT_CTL;
+                            msg.ctl.action = ACTION_STOP;
+                            send (sockfd, (void *)&msg, sizeof (msg), 0);
+                            break;
+                       }
                 
-            case 'l' :
-                show_data_stream ('c');
-                bzero (&msg, sizeof (msg));
-                msg.type = FT_CTL;
-                msg.ctl.action = ACTION_CARRY;
-                send (sockfd, (void *)&msg, sizeof (msg), 0);
-                break;
+            case 'l' : {
+                            show_data_stream ('c');
+                            struct FootBallMsg msg;
+                            bzero (&msg, sizeof (msg));
+                            msg.type = FT_CTL;
+                            msg.ctl.action = ACTION_CARRY;
+                            send (sockfd, (void *)&msg, sizeof (msg), 0);
+                            break;
+                       }
             case 'n' :
                 show_name = show_name ? 0 : 1;
             default :

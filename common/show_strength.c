@@ -18,8 +18,10 @@ void show_strength () {
     bzero (&msg, sizeof (msg));
     for (int i = 2; i < maxx - 2; i++) {
         if (i < maxx / 5 || i > (maxx - maxx / 5)) {
-            wattron (Write, COLOR_PAIR (9));
+            wattron (Write, COLOR_PAIR (8));
         } else if (i < 2 * maxx / 5 || i > 3 * maxx / 5) {
+            wattron (Write, COLOR_PAIR (9));
+        } else {
             wattron (Write, COLOR_PAIR (10));
         }
         mvwaddch (Write, 2, i, ' ');
@@ -52,7 +54,7 @@ void show_strength () {
     }
     char info[512] = {0};
     sprintf (info, "strength = %d", tmp[tmp_x / (maxx / 5)]);
-
+    printf  ("%s\n", info);
     msg.type = FT_CTL;
     msg.ctl.action = ACTION_KICK;
     msg.ctl.strength = tmp [tmp_x / (maxx / 5)];

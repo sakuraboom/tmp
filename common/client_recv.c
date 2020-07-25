@@ -19,19 +19,23 @@ void *client_recv (void *arg) {
         strcpy (user.name, msg.name);
         user.team = msg.team;
         if (msg.type & FT_HEART) {
+            /* printf ("HeartBeat from Server\n"); */
             msg.type = FT_ACK;
             send (sockfd, (void *)&msg, sizeof (msg), 0);
         } else if (msg.type & FT_MSG) {
-
+            /* printf ("Recv from Server : %s\n", msg.msg); */
         } else if (msg.type & FT_WALL) {
-
+            /* printf ("Recv from Server : %s\n", msg.msg); */
         } else if (msg.type & FT_FIN) {
+            printf ("Server is going to stop. \n");
+            close (sockfd);
             endwin ();
             exit (0);
         } else if (msg.type & FT_MAP) {
+            printf ("Foot Game refresh. \n");
             /* parse_spirit (msg.msg, msg.size); */
         } else {
-
+            printf ("Message unsupport.\n");
         }
     }
 }
