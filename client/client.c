@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
     
     pthread_create (&recv_t, NULL, client_recv, NULL);
     
-    signal (SIGALRM, send_ctl);
+    /* signal (SIGALRM, send_ctl); */
     struct itimerval itimer;
     itimer.it_interval.tv_sec = 0;
     itimer.it_interval.tv_usec = 100000;
@@ -132,6 +132,7 @@ int main(int argc, char **argv) {
         switch (c) {
             case 'a' :
                 ctl_msg.ctl.dirx -= 1;
+                send_ctl ();
                 break;
             case 'd' :
                 ctl_msg.ctl.dirx += 1;

@@ -9,6 +9,9 @@
 
 #include "head.h"
 extern int sockfd;
+extern WINDOW *Message;
+extern int message_num;
+extern struct Map court;
 
 void *client_recv (void *arg) {
     while (1) {
@@ -19,10 +22,16 @@ void *client_recv (void *arg) {
         strcpy (user.name, msg.name);
         user.team = msg.team;
         if (msg.type & FT_HEART) {
+            /* wclear (Message); */
+            /* w_gotoxy_puts (Message, (++message_num) % 5, 1, "HeartBeat from Server\n"); */
             /* printf ("HeartBeat from Server\n"); */
             msg.type = FT_ACK;
             send (sockfd, (void *)&msg, sizeof (msg), 0);
         } else if (msg.type & FT_MSG) {
+            char info[512] = {0};
+            wclear (Message);
+            sprintf (info, "Recv from Server : %s\n", msg.msg);
+            w_gotoxy_puts (Message, (++message_num) % 5, 1, info);
             /* printf ("Recv from Server : %s\n", msg.msg); */
         } else if (msg.type & FT_WALL) {
             /* printf ("Recv from Server : %s\n", msg.msg); */
