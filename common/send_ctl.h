@@ -9,5 +9,5 @@
 
 #ifndef _SEND_CTL
 #define _SEND_CTL
-void send_ctl ();
+void send_ctl (int signal_num);
 #endif

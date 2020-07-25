@@ -118,13 +118,12 @@ int main(int argc, char **argv) {
     initfootball();
     
     pthread_create (&recv_t, NULL, client_recv, NULL);
-    
-    /* signal (SIGALRM, send_ctl); */
+    signal (SIGALRM, send_ctl);
     struct itimerval itimer;
-    itimer.it_interval.tv_sec = 0;
-    itimer.it_interval.tv_usec = 100000;
-    itimer.it_value.tv_sec = 0;
-    itimer.it_value.tv_sec = 100000;
+    itimer.it_value.tv_sec = 1;
+    itimer.it_value.tv_usec = 0;
+    itimer.it_interval.tv_sec = 1;
+    itimer.it_interval.tv_usec = 0;
     setitimer (ITIMER_REAL, &itimer, NULL);
 
     while (1) {
@@ -132,7 +131,6 @@ int main(int argc, char **argv) {
         switch (c) {
             case 'a' :
                 ctl_msg.ctl.dirx -= 1;
-                send_ctl ();
                 break;
             case 'd' :
                 ctl_msg.ctl.dirx += 1;
@@ -184,6 +182,10 @@ int main(int argc, char **argv) {
             default :
                 break;
         }
+        wclear (Message);
+        char info[512];
+        sprintf (info, "pos : (%d, %d)\n", ctl_msg.ctl.dirx, ctl_msg.ctl.diry);
+        w_gotoxy_puts (Message, 1, 1, info);
         box (Write, 0, 0);
         wrefresh (Write);
     } 
